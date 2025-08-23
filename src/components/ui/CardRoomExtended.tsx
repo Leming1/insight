@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from './Button';
 import HoverSegmentCarousel from './HoverSegmentCarousel';
+import RoomDetailsModal from './RoomDetailsModal';
 
 interface CardRoomExtendedProps {
   title: string;
@@ -35,6 +36,22 @@ export default function CardRoomExtended({
   detailsLink = '#',
   reverse = false
 }: CardRoomExtendedProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const roomData = {
+    title,
+    capacity,
+    area,
+    description,
+    groupPricing,
+    priceFrom,
+    priceUnit,
+    buttonText,
+    images,
+    hasAirConditioning,
+    hasWifi
+  };
+
   return (
     <div
       className={`bg-white overflow-hidden flex flex-col w-full ${
@@ -60,13 +77,13 @@ export default function CardRoomExtended({
       {/* Правая часть - информация */}
               <div className="lg:w-1/2 p-4 md:p-6 flex flex-col justify-between">
         {/* Заголовок и иконки */}
-        <div className="mb-6">
+        <div className="mb-4">
           <h2 className="card-title mb-4">
             {title}
           </h2>
           
           {/* Иконки характеристик */}
-          <div className="flex space-x-4 mb-6">
+          <div className="flex space-x-4">
             <span className="inline-flex items-center gap-1 icon-text">
               <img src="/icons/person.svg" alt="" width={20} height={20} className="w-5 h-5" />
               {capacity}
@@ -87,8 +104,8 @@ export default function CardRoomExtended({
         </div>
 
         {/* Описание */}
-        <div className="mb-6">
-          <p className="card-text mb-4">
+        <div className="mb-2">
+          <p className="card-text mb-2">
             {description}
           </p>
           <p className="card-text">
@@ -97,13 +114,13 @@ export default function CardRoomExtended({
         </div>
 
         {/* Ссылка "Подробнее о кабинете" */}
-        <div className="mb-8">
-          <a 
-            href={detailsLink}
-            className="text-[#18547f] text-base font-semibold underline hover:text-[#1d6599] transition-colors"
+        <div className="mb-4">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="text-[#18547f] text-base font-semibold underline hover:text-[#1d6599] transition-colors cursor-pointer"
           >
             Подробнее о кабинете
-          </a>
+          </button>
         </div>
 
         {/* Цена и кнопка */}
@@ -118,6 +135,13 @@ export default function CardRoomExtended({
           </Button>
         </div>
       </div>
+
+      {/* Модальное окно с подробной информацией */}
+      <RoomDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        room={roomData}
+      />
     </div>
   );
 }

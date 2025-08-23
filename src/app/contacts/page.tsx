@@ -7,9 +7,9 @@ export default function ContactsPage() {
   return (
     <div className="min-h-screen">
       {/* Hero секция */}
-      <section className="pt-32 lg:pt-48">
+      <section className="pt-32 lg:pt-10">
         <div className="container">
-          <h1 className="heading-1 text-center">
+          <h1 className="heading-1">
             Контакты
           </h1>
         </div>
@@ -74,20 +74,6 @@ export default function ContactsPage() {
                   </a>
                 </div>
               </div>
-
-              {/* Дополнительная информация */}
-              <div className="pt-8">
-                <h2 
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: '"TT Norms Std Trl Cnd"' }}
-                >
-                  Режим работы:
-                </h2>
-                <p className="text-lg text-gray-700">
-                  Пн-Пт: 9:00 - 22:00<br />
-                  Сб-Вс: 10:00 - 20:00
-                </p>
-              </div>
             </div>
 
             {/* Правая часть - карта */}
@@ -110,10 +96,6 @@ export default function ContactsPage() {
           </div>
         </div>
       </section>
-
-      {/* Questions секция */}
-      <Questions />
-
       {/* Footer */}
       <Footer />
     </div>
