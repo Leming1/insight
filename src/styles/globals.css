@@ -1,0 +1,502 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Fonts --- */
+@font-face {
+  font-family: 'TT Norms Std Trl Cnd';
+  src:
+    url('/fonts/TTNormsStdTrlCnd-Regular.woff2') format('woff2'),
+    url('/fonts/TTNormsStdTrlCnd-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Norms Std Trl Cnd';
+  src:
+    url('/fonts/TTNormsStdTrlCnd-Bold.woff2') format('woff2'),
+    url('/fonts/TTNormsStdTrlCnd-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Erewhon';
+  src: url('/fonts/Erewhon-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* --- Design tokens: set once, reuse everywhere --- */
+:root {
+  /* Palette */
+  --gray-1: #555e6e;
+  --teal-2: #18547f;
+  --teal-1: #1d6599;
+  --black: #222222;
+  --white: #ffffff;
+  --yellow-2: #fdd34b;
+  --yellow-1: #ffe146;
+  --gray-2: #888888;
+  --gray-3: #dddddd;
+  --gray-4: #efefef;
+  --sky: #f1f9ff;
+  --page-bg: #F5FAFF;
+  --page-gradient: linear-gradient(180deg, #C5F1FF 0%, #F5FAFF 100%);
+
+  /* Responsive container system */
+  --container-max-width: 1200px;
+  --safe-area-mobile: 24px;
+  --safe-area-tablet: 32px;
+  --safe-area-desktop: 40px;
+  
+  /* Spacing */
+  --gap-cards-mobile: 16px;
+  --gap-cards-tablet: 24px;
+  --gap-cards-desktop: 40px;
+  
+  /* Header heights */
+  --header-height-mobile: 80px;
+  --header-height-desktop: 120px;
+}
+
+/* Responsive safe areas */
+@media (min-width: 768px) {
+  :root {
+    --safe-area: var(--safe-area-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --safe-area: var(--safe-area-desktop);
+    --header-height: var(--header-height-desktop);
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --safe-area: var(--safe-area-mobile);
+    --header-height: var(--header-height-mobile);
+  }
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* --- Components --- */
+@layer components {
+  .heading-1 {
+    font-family: erewhon;
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--black, #222);
+    text-align: center;
+    width: 100%;
+  }
+  @media (min-width: 640px) {
+    .heading-1 {
+      font-size: 36px;
+      letter-spacing: -1.2px;
+    }
+  }
+  @media (min-width: 768px) {
+    .heading-1 {
+      font-size: 40px;
+      letter-spacing: -1.4px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .heading-1 {
+      font-size: 48px;
+      line-height: 1.1;
+      letter-spacing: -1.8px;
+      text-align: left;
+    }
+  }
+  @media (min-width: 1280px) {
+    .heading-1 {
+      font-size: 56px;
+      letter-spacing: -2.2px;
+    }
+  }
+  @media (min-width: 1536px) {
+    .heading-1 {
+      font-size: 64px;
+      letter-spacing: -3.84px;
+    }
+  }
+
+  /* Hero heading - специальный класс для заголовков в Hero секции */
+  .hero-heading {
+    font-family: erewhon;
+    font-size: 36px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: -1.2px;
+    color: var(--black, #222);
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  @media (min-width: 480px) {
+    .hero-heading {
+      font-size: 48px;
+      letter-spacing: -1.6px;
+    }
+  }
+  @media (min-width: 640px) {
+    .hero-heading {
+      font-size: 56px;
+      letter-spacing: -1.8px;
+      max-width: 100%;
+    }
+  }
+  @media (min-width: 768px) {
+    .hero-heading {
+      font-size: 64px;
+      letter-spacing: -2.0px;
+      max-width: 100%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-heading {
+      font-size: 64px;
+      letter-spacing: -2.2px;
+      text-align: left;
+      max-width: 100%;
+    }
+  }
+  @media (min-width: 1280px) {
+    .hero-heading {
+      font-size: 72px;
+      letter-spacing: -2.6px;
+      max-width: 100%;
+    }
+  }
+  @media (min-width: 1536px) {
+    .hero-heading {
+      font-size: 80px;
+      letter-spacing: -3px;
+      max-width: 100%;
+    }
+  }
+  .hero-subtitle {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 150%; /* 22.5px */
+    color: var(--gray-1);
+  }
+  
+  @media (min-width: 768px) {
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 150%; /* 27px */
+    }
+  }
+  .benefit-title {
+    font-family: "TT Norms Std Trl Cnd";
+    font-size: 35px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 35px; /* 100% */
+    color: var(--black, #222);
+  }
+  .body-1 {
+    font-family: Roboto;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 27px */
+    color: var(--gray-1);
+  }
+  
+  @media (max-width: 767px) {
+    .body-1 {
+      font-size: 15px;
+      line-height: 22px; /* 146.667% */
+    }
+  }
+  .icon-text {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+    color: var(--gray-1);
+  }
+  .card-text {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+    color: var(--gray-1);
+  }
+  .card-link {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: var(--teal-2);
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+    text-underline-position: from-font;
+  }
+  .card-title {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+    color: var(--black);
+  }
+  
+  @media (min-width: 768px) {
+    .card-title {
+      font-size: 25px;
+    }
+  }
+  .cardExtended-title {
+    color: var(--Black, #222);
+    font-family: Roboto;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px; /* 114.286% */
+  }
+
+  .price-main {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--black);
+  }
+  
+  @media (min-width: 1024px) {
+    .price-main {
+      font-size: 22px;
+      line-height: 22px;
+    }
+  }
+  .price-unit {
+    font-family:
+      var(--font-roboto),
+      Roboto,
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Arial,
+      sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    color: var(--gray-1);
+  }
+  .btn {
+    @apply flex items-center justify-center rounded-full select-none
+           transition-colors font-tt font-bold uppercase;
+    height: var(--btn-h, 50px);
+    padding-inline: var(--btn-px, 24px);
+    gap: var(--btn-gap, 0px);
+    line-height: normal;
+    text-align: center;
+  }
+
+  /* sizes */
+  .btn.btn-44 {
+    --btn-h: 44px;
+    --btn-px: 24px;
+    --btn-gap: 0px;
+    font-size: 16px; /* вес берём из .btn (font-bold=700) */
+  }
+  .btn.btn-48 {
+    --btn-h: 48px;
+    --btn-px: 24px;
+    --btn-gap: 0px;
+    font-size: 16px;
+  }
+  .btn.btn-50 {
+    --btn-h: 50px;
+    --btn-px: 24px;
+    --btn-gap: 0px;
+    font-size: 18px;
+  }
+
+  /* optional typography preset for mobile */
+  .btn-typo-14-150 {
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  /* variants */
+  .btn.btn-primary-teal {
+    background: var(--teal-1);
+    color: var(--white);
+  }
+  .btn.btn-primary-black {
+    background: var(--black);
+    color: var(--white);
+  }
+  .btn.btn-primary-white {
+    background: var(--white);
+    color: var(--black);
+  }
+  .btn.btn-primary-yellow {
+    background: var(--yellow-1);
+    color: var(--black);
+  }
+
+  .btn.btn-primary-teal:hover {
+    filter: brightness(0.95);
+  }
+  .btn.btn-primary-black:hover {
+    filter: brightness(0.95);
+  }
+  .btn.btn-primary-white:hover {
+    background: var(--gray-4);
+  }
+  .btn.btn-primary-yellow:hover {
+    filter: brightness(0.97);
+  }
+
+  .btn.btn-secondary {
+    @apply bg-transparent backdrop-blur-[2px];
+    border-radius: 9999px;
+    border: 2px solid var(--teal-1);
+    color: var(--teal-1);
+  }
+  .btn.btn-secondary:hover {
+    background: color-mix(in srgb, var(--teal-1) 8%, transparent);
+  }
+
+  /* Заблокированное состояние кнопок */
+  .btn:disabled {
+    background: #D4D4D4 !important;
+    color: #7B7B7B !important;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 1;
+  }
+
+  .btn:disabled:hover {
+    filter: none;
+    background: #D4D4D4 !important;
+    color: #7B7B7B !important;
+  }
+
+  .btn:disabled {
+    @apply opacity-50 pointer-events-none;
+  }
+  .btn:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-[color:var(--teal-1)];
+  }
+}
+
+/* --- Utilities --- */
+@layer utilities {
+  /* Container system */
+  .container {
+    max-width: calc(var(--container-max-width) + (var(--safe-area) * 2));
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--safe-area);
+    padding-right: var(--safe-area);
+  }
+  
+  .container-fluid {
+    width: 100%;
+    margin-left: var(--safe-area);
+    margin-right: var(--safe-area);
+  }
+  
+  /* Legacy support - можно удалить позже */
+  .px-gutter {
+    padding-left: var(--safe-area);
+    padding-right: var(--safe-area);
+  }
+  
+  .container-1280 {
+    max-width: 1280px;
+    margin-inline: auto;
+  }
+  
+  .container-1200 {
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+  /* Глобальный градиент для всей страницы */
+  .page-gradient {
+    background: linear-gradient(0deg, #f5faff 83.3%, #e9f9ff 100%);
+  }
+  /* Первый экран (Hero): градиент сразу с верхушки */
+  .screen-gradient {
+    min-height: 100svh; /* корректно на мобилках */
+    background: linear-gradient(0deg, #f5faff 83.3%, #e9f9ff 100%);
+  }
+  .content-gradient {
+    background: linear-gradient(0deg, #f5faff 0%, #e9f9ff 100%);
+  }
+}
