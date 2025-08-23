@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from './Button';
 
 interface RoomDetailsModalProps {
@@ -22,6 +22,27 @@ interface RoomDetailsModalProps {
 }
 
 export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      // Предотвращаем скролл фона
+      document.body.style.overflow = 'hidden';
+      
+      // Обработчик для закрытия по Escape
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+      
+      document.addEventListener('keydown', handleEscape);
+      
+      return () => {
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -55,11 +76,15 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Фотографии кабинета</h3>
               <div className="grid grid-cols-2 gap-3">
                 {room.images.map((image, index) => (
-                  <div key={index} className="aspect-video rounded-lg overflow-hidden">
+                  <div key={index} className="aspect-video rounded-lg overflow-hidden bg-gray-100">
                     <img
                       src={image.src}
                       alt={image.alt || `${room.title} - фото ${index + 1}`}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        console.error('Ошибка загрузки изображения:', image.src);
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
                     />
                   </div>
                 ))}
@@ -99,10 +124,12 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
                 <p className="text-gray-700 leading-relaxed">{room.description}</p>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Групповые занятия</h3>
-                <p className="text-gray-700">{room.groupPricing}</p>
-              </div>
+              {room.groupPricing && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Групповые занятия</h3>
+                  <p className="text-gray-700">{room.groupPricing}</p>
+                </div>
+              )}
             </div>
           </div>
 

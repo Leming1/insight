@@ -110,9 +110,11 @@ export default function CardRoomExtended({
           <p className="card-text mb-2">
             {description}
           </p>
-          <p className="card-text">
-            {groupPricing}
-          </p>
+          {groupPricing && (
+            <p className="card-text">
+              {groupPricing}
+            </p>
+          )}
         </div>
 
         {/* Ссылка "Подробнее о кабинете" */}
