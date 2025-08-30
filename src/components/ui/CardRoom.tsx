@@ -5,6 +5,7 @@ import Button from '@ui/Button';
 import HoverSegmentCarousel from './HoverSegmentCarousel';
 
 interface CardRoomProps {
+  id: string;
   title: string;
   price: number;
   images: { src: string; alt?: string }[];
@@ -14,9 +15,12 @@ interface CardRoomProps {
   hasWifi?: boolean;
   href?: string;
   isBlocked?: boolean;
+  bookingUrl?: string;
+  onDetailsClick?: () => void;
 }
 
 export default function CardRoom({
+  id,
   title,
   price,
   images,
@@ -25,7 +29,9 @@ export default function CardRoom({
   hasProjector = true,
   hasWifi = true,
   href = '#',
-  isBlocked = false
+  isBlocked = false,
+  bookingUrl,
+  onDetailsClick
 }: CardRoomProps) {
   return (
     <div 
@@ -96,17 +102,18 @@ export default function CardRoom({
         </div>
         
         {/* Ссылка подробнее */}
-        <a 
-          href={href} 
-          className={`card-link block mb-6 transition-colors ${
+        <button
+          type="button"
+          className={`card-link block mb-6 transition-colors text-left ${
             isBlocked 
               ? 'cursor-not-allowed opacity-50' 
-              : 'hover:text-[var(--teal-2)]'
+              : 'hover:text-[var(--teal-2)] cursor-pointer'
           }`}
-          onClick={isBlocked ? (e) => e.preventDefault() : undefined}
+          onClick={isBlocked ? undefined : onDetailsClick}
+          disabled={isBlocked}
         >
           Подробнее о кабинете
-        </a>
+        </button>
         
         {/* Нижняя часть с ценой и кнопкой */}
         <div className="flex items-center justify-between mt-2">
@@ -120,11 +127,14 @@ export default function CardRoom({
           
           {/* Кнопка бронирования */}
           <Button 
+            as="a"
+            href={bookingUrl}
+            target="_blank"
             variant="primary-yellow" 
             size="44"
-            disabled={isBlocked}
+            disabled={isBlocked || !bookingUrl}
           >
-            {isBlocked ? 'ЗАБРОНИРОВАТЬ' : 'ЗАБРОНИРОВАТЬ'}
+            ЗАБРОНИРОВАТЬ
           </Button>
         </div>
       </div>
