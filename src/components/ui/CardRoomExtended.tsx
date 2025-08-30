@@ -6,6 +6,7 @@ import HoverSegmentCarousel from './HoverSegmentCarousel';
 import RoomDetailsModal from './RoomDetailsModal';
 
 interface CardRoomExtendedProps {
+  id: string;
   title: string;
   capacity: string;
   area: string;
@@ -20,9 +21,11 @@ interface CardRoomExtendedProps {
   hasWifi?: boolean;
   detailsLink?: string;
   reverse?: boolean;
+  bookingUrl?: string;
 }
 
 export default function CardRoomExtended({
+  id,
   title,
   capacity,
   area,
@@ -36,11 +39,13 @@ export default function CardRoomExtended({
   hasAirConditioning = true,
   hasWifi = true,
   detailsLink = '#',
-  reverse = false
+  reverse = false,
+  bookingUrl
 }: CardRoomExtendedProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const roomData = {
+    id,
     title,
     capacity,
     area,
@@ -134,7 +139,14 @@ export default function CardRoomExtended({
             <span className="price-unit">{priceUnit}</span>
           </div>
           
-          <Button variant="primary-yellow" size="44">
+          <Button
+            as="a"
+            href={bookingUrl}
+            target="_blank"
+            variant="primary-yellow"
+            size="44"
+            disabled={!bookingUrl}
+          >
             {buttonText}
           </Button>
         </div>
@@ -144,7 +156,7 @@ export default function CardRoomExtended({
       <RoomDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        room={roomData}
+        room={{ ...roomData, bookingUrl }}
       />
     </div>
   );
