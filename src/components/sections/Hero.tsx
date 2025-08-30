@@ -34,7 +34,7 @@ export default function Hero() {
                 <Button as="link" href="/rooms" variant="primary-teal" size="48" className="w-full lg:w-auto">
                   Забронировать
                 </Button>
-                <Button as="link" href="/#spaces" variant="secondary" size="48" className="hidden lg:block w-full lg:w-auto">
+                <Button as="link" href="/#spaces" variant="secondary" size="48" className="hidden lg:inline-flex w-full lg:w-auto">
                   Наши пространства
                 </Button>
               </div>
