@@ -8,20 +8,16 @@ export default function Questions() {
         <h2 className="text-3xl font-bold text-gray-900 mb-6" style={{ fontFamily: '"TT Norms Std Trl Cnd"' }}>
           Остались вопросы?
         </h2>
-        <a 
-          href="https://wa.me/79000000000" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="inline-block"
+        <Button
+          as="a"
+          href="https://wa.me/79000000000"
+          target="_blank"
+          variant="primary-teal"
+          size="50"
+          className="!bg-[#25D366] hover:!bg-[#1FAD4F] inline-flex items-center justify-center w-auto"
         >
-          <Button
-            variant="primary-teal"
-            size="50"
-            className="!bg-[#25D366] hover:!bg-[#1FAD4F] inline-flex items-center justify-center w-auto"
-          >
-            Whatsapp
-          </Button>
-        </a>
+          Whatsapp
+        </Button>
       </div>
     </section>
   );

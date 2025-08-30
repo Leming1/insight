@@ -1,4 +1,8 @@
+'use client';
+
+import React, { useState } from 'react';
 import CardRoom from '@ui/CardRoom';
+import RoomDetailsModal from '@ui/RoomDetailsModal';
 
 type Room = {
 	id: string;
@@ -11,6 +15,9 @@ type Room = {
 	price: number;
 	href: string;
 	isBlocked?: boolean;
+	bookingUrl?: string; // ссылка для бронирования
+	description?: string; // описание для модального окна
+	groupPricing?: string; // информация о групповом ценообразовании
 };
 
 const rooms: Room[] = [
@@ -28,6 +35,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-1',
+		bookingUrl: 'https://n1617633.yclients.com',
+		description: 'Кондиционер\n2 комфортабельных кресла\nЖурнальный столик\nСветильник\nСтеллаж с канцелярией\nЦветы, вазы, свечки\nНастольные часы\nWi-Fi',
+		groupPricing: 'При необходимости можно установить:\nстолы до 3 шт,\nстулья,\nковрики для йоги,\nподушки,\nсидушки,\nкушетки до 2 шт\n\nИспользование инвентаря входит в стоимость аренды кабинета, и доступно по предварительной брони - пожалуйста укажите это при записи. Также из кабинета можно вынести всю мебель.\n\nдо 4 человек — 500 ₽/час\nот 5 человек — 650 ₽/час',
 	},
 	{
 		id: 'r2',
@@ -44,6 +54,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-2',
+		bookingUrl: 'https://n1622709.yclients.com',
+		description: 'В кабинете имеется: журнальный столик, 2 комфортабельных кресла, диван, светильник, стеллаж с канцелярией, предметы интерьера: цветы, вазы, свечки, салфетки, часы и кондиционер.',
+		groupPricing: 'При групповых занятиях от 5 человек стоимость — 650 ₽/час',
 	},
 	{
 		id: 'r3',
@@ -59,6 +72,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-3',
+		bookingUrl: 'https://n1622712.yclients.com',
+		description: 'Уютный кабинет с комфортной мебелью, кондиционером и всем необходимым для индивидуальных консультаций.',
+		groupPricing: 'Оптимально для индивидуальных занятий до 5 человек',
 	},
 	{
 		id: 'r4',
@@ -74,6 +90,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-4',
+		bookingUrl: 'https://n1622715.yclients.com',
+		description: 'Компактный кабинет с современным дизайном, оборудованный всем необходимым для профессиональной работы.',
+		groupPricing: 'Идеально подходит для маленьких групп до 5 человек',
 	},
 	{
 		id: 'r5',
@@ -91,6 +110,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-5',
+		bookingUrl: 'https://n1622718.yclients.com',
+		description: 'Просторный кабинет с комфортной обстановкой, кондиционером и надёжным Wi-Fi.',
+		groupPricing: 'Оптимальная площадь 13м² для малых групп',
 	},
 	{
 		id: 'r6',
@@ -105,6 +127,8 @@ const rooms: Room[] = [
 		price: 500,
 		href: '/rooms/cabinet-6',
 		isBlocked: true,
+		description: 'Компактный кабинет с необходимым оборудованием для профессиональной работы.',
+		groupPricing: 'Кабинет временно недоступен',
 	},
 	{
 		id: 'r7',
@@ -122,6 +146,9 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 500,
 		href: '/rooms/cabinet-7',
+		bookingUrl: 'https://n1622721.yclients.com',
+		description: 'Просторный кабинет с увеличенной площадью, подходящий для работы с большими группами.',
+		groupPricing: 'Оптимально для групп до 10 человек, площадь 17м²',
 	},
 	{
 		id: 'r8',
@@ -140,6 +167,8 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 1500,
 		href: '/rooms/hall-1',
+		description: 'Большой конференц-зал для крупных мероприятий, тренингов и семинаров. Оснащён проектором, экраном, звуковым оборудованием.',
+		groupPricing: 'Максимальная вместимость 50 человек, площадь 65м²',
 	},
 	{
 		id: 'r9',
@@ -157,12 +186,44 @@ const rooms: Room[] = [
 		hasWifi: true,
 		price: 1200,
 		href: '/rooms/hall-2',
+		description: 'Средний зал для групповых занятий и тренингов. В зале имеется: проектор, экран, флипчарт, стулья, столы, звуковое оборудование и кондиционер.',
+		groupPricing: 'Оптимально для групп до 35 человек, площадь 40м²',
 	},
 ];
 
 export default function Spaces() {
+	const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	// Функция для преобразования данных комнаты в формат модального окна
+	const transformRoomForModal = (room: Room) => ({
+		id: room.id,
+		title: room.title,
+		capacity: `До ${room.capacity} человек`,
+		area: `${room.area}м²`,
+		description: room.description || 'Уютный кабинет с современным оборудованием',
+		groupPricing: room.groupPricing || '',
+		priceFrom: `от ${room.price} ₽`,
+		priceUnit: '/ в час',
+		buttonText: 'ЗАБРОНИРОВАТЬ',
+		images: room.images,
+		hasAirConditioning: true,
+		hasWifi: room.hasWifi,
+		bookingUrl: room.bookingUrl,
+	});
+
+	const handleRoomClick = (room: Room) => {
+		setSelectedRoom(room);
+		setIsModalOpen(true);
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedRoom(null);
+	};
+
 	return (
-		<section className="w-full bg-[#F5FAFF] pt-8 pb-12 md:py-16">
+		<section id="spaces" className="w-full bg-[#F5FAFF] pt-8 pb-12 md:py-16">
 			<div className="container">
 				<h2 className="heading-1 text-center mb-8 md:mb-12">Кабинеты и залы</h2>
 				
@@ -170,6 +231,7 @@ export default function Spaces() {
 					{rooms.map((room) => (
 						<CardRoom
 							key={room.id}
+							id={room.id}
 							title={room.title}
 							images={room.images}
 							capacity={room.capacity}
@@ -179,10 +241,21 @@ export default function Spaces() {
 							price={room.price}
 							href={room.href}
 							isBlocked={room.isBlocked}
+							bookingUrl={room.bookingUrl}
+							onDetailsClick={() => handleRoomClick(room)}
 						/>
 					))}
 				</div>
 			</div>
+
+			{/* Модальное окно */}
+			{selectedRoom && (
+				<RoomDetailsModal
+					isOpen={isModalOpen}
+					onClose={handleCloseModal}
+					room={transformRoomForModal(selectedRoom)}
+				/>
+			)}
 		</section>
 	);
 }
