@@ -8,8 +8,8 @@ const roomsData = [
     title: 'Кабинет 1',
     capacity: 'До 10 человек',
     area: '16м²',
-    description: 'В кабинете имеется: журнальный столик, 2 комфортабельных кресла, светильник, стеллаж с канцелярией, предметы интерьера: цветы, вазы, свечки, салфетки, часы и кондиционер.',
-    groupPricing: 'При групповых занятиях от 5 человек стоимость — 650 ₽/час',
+    description: 'Кондиционер\n2 комфортабельных кресла\nЖурнальный столик\nСветильник\nСтеллаж с канцелярией\nЦветы, вазы, свечки\nНастольные часы\nWi-Fi',
+    groupPricing: 'При необходимости можно установить:\nстолы до 3 шт,\nстулья,\nковрики для йоги,\nподушки,\nсидушки,\nкушетки до 2 шт\n\nИспользование инвентаря входит в стоимость аренды кабинета, и доступно по предварительной брони - пожалуйста укажите это при записи. Также из кабинета можно вынести всю мебель.\n\nдо 4 человек — 500 ₽/час\nот 5 человек — 650 ₽/час',
     priceFrom: 'от 500 ₽',
     priceUnit: '/ в час',
     buttonText: 'ЗАБРОНИРОВАТЬ',
@@ -21,7 +21,8 @@ const roomsData = [
     href: '#booking-1',
     detailsLink: '#details-1',
     hasAirConditioning: true,
-    hasWifi: true
+    hasWifi: true,
+    bookingUrl: 'https://n1617633.yclients.com'
   },
   {
     id: '2',
@@ -42,7 +43,8 @@ const roomsData = [
     href: '#booking-2',
     detailsLink: '#details-2',
     hasAirConditioning: true,
-    hasWifi: true
+    hasWifi: true,
+    bookingUrl: 'https://n1622709.yclients.com'
   },
   {
     id: '3',
@@ -62,7 +64,8 @@ const roomsData = [
     href: '#booking-3',
     detailsLink: '#details-3',
     hasAirConditioning: true,
-    hasWifi: true
+    hasWifi: true,
+    bookingUrl: 'https://n1622709.yclients.com'
   },
   {
     id: '4',
@@ -82,7 +85,8 @@ const roomsData = [
     href: '#booking-4',
     detailsLink: '#details-4',
     hasAirConditioning: true,
-    hasWifi: true
+    hasWifi: true,
+    bookingUrl: 'https://n1622715.yclients.com'
   },
   {
     id: '5',
@@ -144,7 +148,8 @@ const roomsData = [
     href: '#booking-7',
     detailsLink: '#details-7',
     hasAirConditioning: true,
-    hasWifi: true
+    hasWifi: true,
+    bookingUrl: 'https://n1622721.yclients.com'
   },
   {
     id: '8',
@@ -212,6 +217,7 @@ export default function RoomsPage() {
                         {roomsData.map((room) => (
               <CardRoomExtended
                 key={room.id}
+                id={room.id}
                 title={room.title}
                 capacity={room.capacity}
                 area={room.area}
@@ -225,6 +231,7 @@ export default function RoomsPage() {
                 detailsLink={room.detailsLink}
                 hasAirConditioning={room.hasAirConditioning}
                 hasWifi={room.hasWifi}
+                bookingUrl={(room as any).bookingUrl}
                 reverse={false}
               />
             ))}
