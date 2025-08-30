@@ -10,6 +10,8 @@ interface ButtonProps {
   typo?: '14-150';
   as?: 'button' | 'a' | 'link';
   href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
@@ -29,6 +31,8 @@ export default function Button({
   typo,
   as = 'button',
   href,
+  target,
+  rel,
   className = '',
   disabled = false,
   onClick,
@@ -51,24 +55,52 @@ export default function Button({
     .join(' ');
 
   // Общие props для всех вариантов
-  const commonProps = {
+  const commonButtonProps = {
     className: buttonClasses,
     onClick,
     disabled,
-  };
+  } as const;
 
   // Рендерим в зависимости от as prop
   if (as === 'link' && href) {
+    if (disabled) {
+      return (
+        <span
+          role="link"
+          aria-disabled="true"
+          tabIndex={-1}
+          className={buttonClasses}
+        >
+          {children}
+        </span>
+      );
+    }
+    const safeRel = target === '_blank' ? (rel ? rel : 'noopener noreferrer') : rel;
     return (
-      <Link href={href} {...commonProps}>
+      <Link href={href} className={buttonClasses} target={target} rel={safeRel}>
         {children}
       </Link>
     );
   }
 
   if (as === 'a' && href) {
+    const safeRel = target === '_blank' ? (rel ? rel : 'noopener noreferrer') : rel;
     return (
-      <a href={href} {...commonProps}>
+      <a
+        href={href}
+        className={buttonClasses}
+        target={target}
+        rel={safeRel}
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : undefined}
+        onClick={(e) => {
+          if (disabled) {
+            e.preventDefault();
+            return;
+          }
+          onClick?.();
+        }}
+      >
         {children}
       </a>
     );
@@ -76,7 +108,7 @@ export default function Button({
 
   // По умолчанию button
   return (
-    <button type="button" {...commonProps}>
+    <button type="button" {...commonButtonProps}>
       {children}
     </button>
   );
