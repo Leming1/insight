@@ -3,9 +3,11 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
+import HoverSegmentCarousel from "./HoverSegmentCarousel";
 
 type RoomImage = { src: string; alt?: string };
 type Room = {
+  id: string;
   title: string;
   capacity: string;
   area: string;
@@ -17,6 +19,8 @@ type Room = {
   images: RoomImage[];
   hasAirConditioning?: boolean;
   hasWifi?: boolean;
+  additionalInfo?: string;
+  bookingUrl?: string;
 };
 
 interface RoomDetailsModalProps {
@@ -33,18 +37,73 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
 
   const close = useCallback(() => onClose(), [onClose]);
 
-  // Блокировка скролла + возврат фокуса
+  // Блокировка скролла без изменения позиции (универсально для десктоп/мобайл)
   useEffect(() => {
     if (!isOpen) return;
+    
     previouslyFocused.current = document.activeElement as HTMLElement;
-
+    
+    const body = document.body;
     const html = document.documentElement;
-    const prevOverflow = html.style.overflow;
-    html.style.overflow = "hidden";
+    
+    // Сохраняем текущую позицию скролла
+    const scrollY = window.scrollY;
+    const scrollX = window.scrollX;
+    
+    // Получаем ширину scrollbar для компенсации (если браузер показывает его)
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    
+    // Сохраняем оригинальные стили
+    const originalStyles = {
+      bodyOverflow: body.style.overflow,
+      bodyPaddingRight: body.style.paddingRight,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyWidth: body.style.width,
+      htmlOverflow: html.style.overflow,
+    };
+    
+    // Единый подход: фиксируем body и сохраняем позицию скролла
+    // Это предотвращает "подскок" страницы вверх при открытии модалки
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    // Компенсация пропажи полосы прокрутки, чтобы не было горизонтального сдвига
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    // Не трогаем overflow у html, чтобы не сбрасывать позицию скролла в некоторых браузерах
+    
+    // Добавляем класс для дополнительной стилизации
+    document.body.classList.add('modal-open');
 
     return () => {
-      html.style.overflow = prevOverflow;
-      previouslyFocused.current?.focus?.();
+      // Восстанавливаем оригинальные стили
+      body.style.overflow = originalStyles.bodyOverflow;
+      body.style.paddingRight = originalStyles.bodyPaddingRight;
+      body.style.position = originalStyles.bodyPosition;
+      body.style.top = originalStyles.bodyTop;
+      body.style.left = originalStyles.bodyLeft;
+      body.style.width = originalStyles.bodyWidth;
+      html.style.overflow = originalStyles.htmlOverflow;
+      
+      // Убираем класс
+      document.body.classList.remove('modal-open');
+      
+      // Всегда восстанавливаем позицию скролла
+      const top = body.style.top;
+      if (top) {
+        const y = -parseInt(top, 10) || 0;
+        window.scrollTo(scrollX, y);
+      }
+      
+      // Возвращаем фокус
+      if (previouslyFocused.current) {
+        previouslyFocused.current.focus();
+      }
     };
   }, [isOpen]);
 
@@ -98,11 +157,18 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="presentation"
       onMouseDown={(e) => {
-        if (e.target === overlayRef.current) close();
+        // Закрываем при клике по фону (вне диалога)
+        if (dialogRef.current && !dialogRef.current.contains(e.target as Node)) {
+          close();
+        }
       }}
     >
       {/* Затемнение фона */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+      <div 
+        className="absolute inset-0" 
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+        aria-hidden="true" 
+      />
 
       {/* Модальное окно */}
       <div
@@ -114,98 +180,102 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
         tabIndex={-1}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Заголовок */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 id={titleId} className="text-2xl font-bold text-gray-900">
-            {room.title}
-          </h2>
-          <button
-            onClick={close}
-            className="p-2 rounded-full hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            aria-label="Закрыть модальное окно"
-          >
-            <img src="/icons/close.svg" alt="" width={24} height={24} />
-          </button>
-        </div>
+        {/* Кнопка закрытия */}
+        <button
+          onClick={close}
+          className="absolute top-4 right-4 p-2 rounded-full bg-white shadow-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 z-10"
+          aria-label="Закрыть модальное окно"
+        >
+          <img src="/icons/close.svg" alt="" width={24} height={24} />
+        </button>
 
         {/* Контент */}
         <div className="p-6 overflow-y-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Левая колонка - изображения */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Фотографии кабинета</h3>
-              <div 
-                className="grid grid-cols-2 gap-3"
-                role="region"
-                aria-label={`Фотографии ${room.title}`}
-              >
-                {room.images?.map((image, index) => (
-                  <div key={image.src + index} className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-                    <img
-                      src={image.src}
-                      alt={image.alt || `${room.title} — фото ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                      loading={index > 1 ? "lazy" : "eager"}
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                  </div>
-                ))}
+          {/* Заголовок */}
+          <h2 id={titleId} className="text-2xl font-bold text-[var(--black)] mb-4">
+            {room.title}
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+            {/* Левая колонка - характеристики */}
+            <div className="lg:col-span-7 space-y-6">
+                            {/* Иконки характеристик */}
+              <div className="flex space-x-4 text-gray-600 text-sm mb-4">
+                <span className="inline-flex items-center gap-1 icon-text">
+                  <img src="/icons/person.svg" alt="" width={20} height={20} className="w-5 h-5" />
+                  {room.capacity}
+                </span>
+                <span className="inline-flex items-center gap-1 icon-text">
+                  <img src="/icons/area.svg" alt="" width={20} height={20} className="w-5 h-5" />
+                  {room.area}
+                </span>
+                <span className="inline-flex items-center gap-1 icon-text">
+                  <img src="/icons/air-conditioning.svg" alt="" width={20} height={20} className="w-5 h-5" />
+                </span>
+                {room.hasWifi && (
+                  <span className="inline-flex items-center gap-1 icon-text">
+                    <img src="/icons/wifi.svg" alt="" width={20} height={20} className="w-5 h-5" />
+                  </span>
+                )}
               </div>
-            </div>
 
-            {/* Правая колонка - характеристики */}
-            <div className="space-y-6">
               <section>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Основные характеристики</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-3">
-                    <img src="/icons/person.svg" alt="" width={20} height={20} className="w-5 h-5" />
-                    <span className="text-gray-700">Вместимость: {room.capacity}</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <img src="/icons/area.svg" alt="" width={20} height={20} className="w-5 h-5" />
-                    <span className="text-gray-700">Площадь: {room.area}</span>
-                  </li>
-                  {room.hasAirConditioning && (
-                    <li className="flex items-center gap-3">
-                      <img src="/icons/air-conditioning.svg" alt="" width={20} height={20} className="w-5 h-5" />
-                      <span className="text-gray-700">Кондиционер</span>
-                    </li>
-                  )}
-                  {room.hasWifi && (
-                    <li className="flex items-center gap-3">
-                      <img src="/icons/wifi.svg" alt="" width={20} height={20} className="w-5 h-5" />
-                      <span className="text-gray-700">Wi-Fi</span>
-                    </li>
-                  )}
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">Оборудование кабинета</h3>
+                <ul className="text-gray-700 leading-relaxed" style={{ gap: '4px' }}>
+                  {room.description
+                    .split('\n')
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                    .map((item, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        <span className="text-[var(--gray-1)] text-sm">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
                 </ul>
               </section>
 
               <section>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Описание</h3>
-                <p className="text-gray-700 leading-relaxed">{room.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Инвентарь</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {room.groupPricing ? room.groupPricing : 'Информация о групповых занятиях не указана'}
+                </p>
               </section>
-
-              {room.groupPricing && (
-                <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Групповые занятия</h3>
-                  <p className="text-gray-700">{room.groupPricing}</p>
-                </section>
-              )}
             </div>
-          </div>
 
-          {/* Цена и кнопка */}
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-gray-900">{room.priceFrom}</span>
-                <span className="text-lg text-gray-600">{room.priceUnit}</span>
+            {/* Правая колонка - изображения */}
+            <div className="lg:col-span-5 space-y-4">
+              <div 
+                role="region"
+                aria-label={`Фотографии ${room.title}`}
+              >
+                <HoverSegmentCarousel
+                  images={room.images}
+                  aspectRatio="16 / 10"
+                  crossfadeMs={120}
+                  ariaLabel={`Фотогалерея — ${room.title}`}
+                  className="w-full h-full rounded-lg"
+                />
               </div>
-              <Button variant="primary-yellow" size="44" aria-label="Забронировать кабинет">
-                {room.buttonText}
+              
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Стоимость</h3>
+              <div className="text-gray-700 mb-4">
+                <p className="text-gray-700 leading-relaxed">
+                  {room.priceFrom} <span className="price-unit">{room.priceUnit}</span>
+                </p>
+              </div>
+              
+              <Button 
+                as="a"
+                href={room.bookingUrl}
+                target="_blank"
+                variant="primary-yellow" 
+                size="44" 
+                aria-label="Забронировать кабинет"
+                className="w-full"
+                disabled={!room.bookingUrl}
+              >
+                Забронировать
               </Button>
             </div>
           </div>
