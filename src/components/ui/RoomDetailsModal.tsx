@@ -37,7 +37,7 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
 
   const close = useCallback(() => onClose(), [onClose]);
 
-  // Блокировка скролла без изменения позиции (универсально для десктоп/мобайл)
+  // Простая блокировка скролла без фиксации body/top — без "подскоков"
   useEffect(() => {
     if (!isOpen) return;
     
@@ -45,37 +45,20 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
     
     const body = document.body;
     const html = document.documentElement;
-    
-    // Сохраняем текущую позицию скролла
-    const scrollY = window.scrollY;
-    const scrollX = window.scrollX;
-    
     // Получаем ширину scrollbar для компенсации (если браузер показывает его)
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    
+
     // Сохраняем оригинальные стили
     const originalStyles = {
       bodyOverflow: body.style.overflow,
       bodyPaddingRight: body.style.paddingRight,
-      bodyPosition: body.style.position,
-      bodyTop: body.style.top,
-      bodyLeft: body.style.left,
-      bodyWidth: body.style.width,
       htmlOverflow: html.style.overflow,
     };
     
-    // Единый подход: фиксируем body и сохраняем позицию скролла
-    // Это предотвращает "подскок" страницы вверх при открытии модалки
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.left = '0';
-    body.style.width = '100%';
+    // Минимальный и практичный подход: просто скрываем скролл и компенсируем ширину
+    html.style.overflow = 'hidden';
     body.style.overflow = 'hidden';
-    // Компенсация пропажи полосы прокрутки, чтобы не было горизонтального сдвига
-    if (scrollbarWidth > 0) {
-      body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    // Не трогаем overflow у html, чтобы не сбрасывать позицию скролла в некоторых браузерах
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
     
     // Добавляем класс для дополнительной стилизации
     document.body.classList.add('modal-open');
@@ -84,25 +67,19 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
       // Восстанавливаем оригинальные стили
       body.style.overflow = originalStyles.bodyOverflow;
       body.style.paddingRight = originalStyles.bodyPaddingRight;
-      body.style.position = originalStyles.bodyPosition;
-      body.style.top = originalStyles.bodyTop;
-      body.style.left = originalStyles.bodyLeft;
-      body.style.width = originalStyles.bodyWidth;
       html.style.overflow = originalStyles.htmlOverflow;
       
       // Убираем класс
       document.body.classList.remove('modal-open');
       
-      // Всегда восстанавливаем позицию скролла
-      const top = body.style.top;
-      if (top) {
-        const y = -parseInt(top, 10) || 0;
-        window.scrollTo(scrollX, y);
-      }
-      
       // Возвращаем фокус
       if (previouslyFocused.current) {
-        previouslyFocused.current.focus();
+        // предотвращаем автоскролл страницы к элементу
+        try {
+          (previouslyFocused.current as any).focus({ preventScroll: true });
+        } catch {
+          previouslyFocused.current.focus();
+        }
       }
     };
   }, [isOpen]);
