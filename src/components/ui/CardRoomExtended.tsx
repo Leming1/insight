@@ -22,6 +22,14 @@ interface CardRoomExtendedProps {
   detailsLink?: string;
   reverse?: boolean;
   bookingUrl?: string;
+  isBlocked?: boolean;
+  // Новые поля для залов
+  additionalInfo?: string;
+  priceDetails?: string;
+  basicPackage?: string[];
+  fullPackage?: string[];
+  basicPricing?: string;
+  fullPricing?: string;
 }
 
 export default function CardRoomExtended({
@@ -40,7 +48,14 @@ export default function CardRoomExtended({
   hasWifi = true,
   detailsLink = '#',
   reverse = false,
-  bookingUrl
+  bookingUrl,
+  isBlocked,
+  additionalInfo,
+  priceDetails,
+  basicPackage,
+  fullPackage,
+  basicPricing,
+  fullPricing
 }: CardRoomExtendedProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -56,14 +71,22 @@ export default function CardRoomExtended({
     buttonText,
     images,
     hasAirConditioning,
-    hasWifi
+    hasWifi,
+    bookingUrl,
+    isBlocked,
+    additionalInfo,
+    priceDetails,
+    basicPackage,
+    fullPackage,
+    basicPricing,
+    fullPricing
   };
 
   return (
     <div
       className={`bg-white overflow-hidden flex flex-col w-full ${
         reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'
-      }`}
+      } ${isBlocked ? 'opacity-75' : ''}`}
       style={{
         borderRadius: '16px',
         boxShadow:
@@ -71,20 +94,39 @@ export default function CardRoomExtended({
       }}
     >
       {/* Левая часть - карусель изображений */}
-      <div className="lg:w-1/2">
+      <div className="lg:w-1/2 relative">
         <HoverSegmentCarousel
           images={images}
           aspectRatio="16 / 10"
           crossfadeMs={120}
           ariaLabel={`Фотогалерея — ${title}`}
-          className="w-full h-full"
+          className={`w-full h-full ${isBlocked ? 'opacity-20' : ''}`}
         />
+        
+        {/* Индикатор занятости для заблокированной карточки */}
+        {isBlocked && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div 
+              style={{
+                color: 'var(--gray-2, #888)',
+                fontFamily: 'var(--font-roboto)',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '700',
+                lineHeight: '150%',
+                textTransform: 'uppercase'
+              }}
+            >
+              ЗАБРОНИРОВАНО
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Правая часть - информация */}
               <div className="lg:w-1/2 p-4 md:p-6 flex flex-col justify-between">
         {/* Заголовок и иконки */}
-        <div className="mb-4">
+        <div className={`mb-4 ${isBlocked ? 'opacity-50' : ''}`}>
           <h2 className="card-title mb-4">
             {title}
           </h2>
@@ -110,20 +152,10 @@ export default function CardRoomExtended({
           </div>
         </div>
 
-        {/* Описание */}
-        <div className="mb-2">
-          <p className="card-text mb-2">
-            {description}
-          </p>
-          {groupPricing && (
-            <p className="card-text">
-              {groupPricing}
-            </p>
-          )}
-        </div>
+
 
         {/* Ссылка "Подробнее о кабинете" */}
-        <div className="mb-4">
+        <div className={`mb-4 ${isBlocked ? 'opacity-50' : ''}`}>
           <button 
             onClick={() => setIsModalOpen(true)}
             className="text-[#18547f] text-base font-semibold underline hover:text-[#1d6599] transition-colors cursor-pointer"
@@ -133,7 +165,7 @@ export default function CardRoomExtended({
         </div>
 
         {/* Цена и кнопка */}
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center justify-between ${isBlocked ? 'opacity-50' : ''}`}>
           <div className="flex items-baseline gap-1">
             <span className="price-main">{priceFrom}</span>
             <span className="price-unit">{priceUnit}</span>
@@ -145,9 +177,9 @@ export default function CardRoomExtended({
             target="_blank"
             variant="primary-yellow"
             size="44"
-            disabled={!bookingUrl}
+            disabled={!bookingUrl || isBlocked}
           >
-            {buttonText}
+            {isBlocked ? 'Забронировано' : buttonText}
           </Button>
         </div>
       </div>
@@ -156,7 +188,7 @@ export default function CardRoomExtended({
       <RoomDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        room={{ ...roomData, bookingUrl }}
+        room={roomData}
       />
     </div>
   );

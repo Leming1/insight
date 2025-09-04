@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "export": "next build"
+    "export": "next build",
+    "check-export": "node scripts/check-export.cjs",
+    "verify-export": "node scripts/verify-export.cjs",
+    "check-safari": "node scripts/check-safari.cjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

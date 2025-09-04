@@ -3,23 +3,10 @@
 @tailwind utilities;
 
 /* --- Fonts --- */
-/* TT Norms - Regular */
-@font-face {
-  font-family: 'TT Norms Std Trl Cnd';
-  src: url('/fonts/TT Norms Std Trial Condensed Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* TT Norms - Bold */
-@font-face {
-  font-family: 'TT Norms Std Trl Cnd';
-  src: url('/fonts/TT Norms Std Trial Condensed Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* Roboto подключен через Next.js Google Fonts */
+/* Используется переменная --font-roboto */
+/* Roboto Condensed подключен через Next.js Google Fonts */
+/* Используется переменная --font-roboto-condensed */
 
 /* Erewhon - Regular */
 @font-face {
@@ -105,7 +92,6 @@ html {
 body {
   font-family: 
     var(--font-roboto),
-    Roboto,
     system-ui,
     -apple-system,
     'Segoe UI',
@@ -270,9 +256,7 @@ input, textarea, select {
     }
   }
   .hero-subtitle {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -291,7 +275,7 @@ input, textarea, select {
     }
   }
   .benefit-title {
-    font-family: "TT Norms Std Trl Cnd";
+    font-family: var(--font-roboto);
     font-size: 35px;
     font-style: normal;
     font-weight: 700;
@@ -299,7 +283,7 @@ input, textarea, select {
     color: var(--black, #222);
   }
   .body-1 {
-    font-family: Roboto;
+    font-family: var(--font-roboto);
     font-size: 18px;
     font-style: normal;
     font-weight: 400;
@@ -314,9 +298,7 @@ input, textarea, select {
     }
   }
   .icon-text {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -329,9 +311,7 @@ input, textarea, select {
     color: var(--gray-1);
   }
   .card-text {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -344,9 +324,7 @@ input, textarea, select {
     color: var(--gray-1);
   }
   .card-link {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -365,29 +343,27 @@ input, textarea, select {
     text-underline-position: from-font;
   }
   .card-title {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
       Arial,
       sans-serif;
-    font-size: 20px;
+    font-size: 20px; /* was 17px */
     font-style: normal;
     font-weight: 600;
-    line-height: 32px;
+    line-height: 29px; /* уменьшено с 30px на 1px */
     color: var(--black);
   }
   
   @media (min-width: 768px) {
     .card-title {
-      font-size: 25px;
+      font-size: 22px; /* уменьшено с 23px на 1px */
     }
   }
   .cardExtended-title {
     color: var(--Black, #222);
-    font-family: Roboto;
+    font-family: var(--font-roboto);
     font-size: 28px;
     font-style: normal;
     font-weight: 600;
@@ -395,9 +371,7 @@ input, textarea, select {
   }
 
   .price-main {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -417,9 +391,7 @@ input, textarea, select {
     }
   }
   .price-unit {
-    font-family:
-      var(--font-roboto),
-      Roboto,
+    font-family: var(--font-roboto),
       system-ui,
       -apple-system,
       'Segoe UI',
@@ -433,7 +405,8 @@ input, textarea, select {
   }
   .btn {
     @apply flex items-center justify-center rounded-full select-none
-           transition-colors font-tt font-bold uppercase;
+           transition-colors uppercase;
+    font-family: var(--font-roboto-condensed);
     height: var(--btn-h, 50px);
     padding-inline: var(--btn-px, 24px);
     gap: var(--btn-gap, 0px);
@@ -446,19 +419,25 @@ input, textarea, select {
     --btn-h: 44px;
     --btn-px: 24px;
     --btn-gap: 0px;
-    font-size: 16px; /* вес берём из .btn (font-bold=700) */
+    font-size: 16px; /* увеличено с 14px на 2px */
+    font-weight: 600; /* изменено с 500 на 600 */
+    letter-spacing: -0.2px;
   }
   .btn.btn-48 {
     --btn-h: 48px;
     --btn-px: 24px;
     --btn-gap: 0px;
-    font-size: 16px;
+    font-size: 16px; /* увеличено с 14px на 2px */
+    font-weight: 600; /* изменено с 500 на 600 */
+    letter-spacing: -0.2px;
   }
   .btn.btn-50 {
     --btn-h: 50px;
     --btn-px: 24px;
     --btn-gap: 0px;
-    font-size: 18px;
+    font-size: 18px; /* увеличено с 16px на 2px */
+    font-weight: 600; /* изменено с 500 на 600 */
+    letter-spacing: -0.3px;
   }
 
   /* optional typography preset for mobile */
@@ -511,8 +490,8 @@ input, textarea, select {
 
   /* Заблокированное состояние кнопок */
   .btn:disabled {
-    background: #D4D4D4 !important;
-    color: #7B7B7B !important;
+    background: #EFEFEF !important;
+    color: #DDDDDD !important;
     cursor: not-allowed;
     pointer-events: none;
     opacity: 1;
@@ -520,8 +499,8 @@ input, textarea, select {
 
   .btn:disabled:hover {
     filter: none;
-    background: #D4D4D4 !important;
-    color: #7B7B7B !important;
+    background: #EFEFEF !important;
+    color: #DDDDDD !important;
   }
   .btn:focus-visible {
     @apply outline-none ring-2 ring-offset-2 ring-[color:var(--teal-1)];

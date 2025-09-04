@@ -20,23 +20,17 @@ export default function ContactsPage() {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Левая часть - контактная информация */}
-            <div className="space-y-8">
-              {/* Связь с нами */}
+            <div>
+              {/* Контакты */}
               <div>
-                <h2 
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: '"TT Norms Std Trl Cnd"' }}
-                >
-                  Связь с нами:
-                </h2>
                 <div className="space-y-3">
                   <a 
-                    href="https://maps.google.com/?q=ул. Фатыха Карима, 20, Казань"
+                    href="https://maps.google.com/?q=Казань, ул. Фатыха Карима, 20"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-lg text-[#18547f] hover:text-[#1d6599] transition-colors underline"
                   >
-                    ул. Фатыха Карима, 20
+                    Казань, ул. Фатыха Карима, 20
                   </a>
                   <a 
                     href="https://wa.me/79000000000"
@@ -47,25 +41,7 @@ export default function ContactsPage() {
                     Whatsapp
                   </a>
                   <a 
-                    href="mailto:example@email.com"
-                    className="block text-lg text-[#18547f] hover:text-[#1d6599] transition-colors underline"
-                  >
-                    example@email.com
-                  </a>
-                </div>
-              </div>
-
-              {/* Социальные сети */}
-              <div>
-                <h2 
-                  className="text-2xl font-bold text-gray-900 mb-4"
-                  style={{ fontFamily: '"TT Norms Std Trl Cnd"' }}
-                >
-                  Соц. сети:
-                </h2>
-                <div className="space-y-3">
-                  <a 
-                    href="https://instagram.com/insight_kazan"
+                    href="https://www.instagram.com/st.insight?igsh=czhmNGg3MGk1MzA1"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-lg text-[#18547f] hover:text-[#1d6599] transition-colors underline"

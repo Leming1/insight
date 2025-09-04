@@ -11,7 +11,7 @@ export default function Hero() {
   return (
     <section 
       aria-label="Hero" 
-      className="relative isolate w-full h-[660px] bg-red"
+      className="relative isolate w-full h-[400px] md:h-[660px] bg-red"
     >
       {/* Hero content */}
       <div className="container relative">
@@ -31,7 +31,7 @@ export default function Hero() {
               <p className="hero-subtitle mt-5 text-left">Почасовая аренда кабинетов в центре Казани</p>
 
               <div className="mt-[72px] lg:mt-9 flex flex-col lg:flex-row items-start justify-start gap-3 w-full lg:w-auto">
-                <Button as="link" href="/rooms" variant="primary-teal" size="48" className="w-full lg:w-auto">
+                <Button as="link" href="/#spaces" variant="primary-teal" size="48" className="w-full lg:w-auto">
                   Забронировать
                 </Button>
                 <Button as="link" href="/#spaces" variant="secondary" size="48" className="hidden lg:inline-flex w-full lg:w-auto">

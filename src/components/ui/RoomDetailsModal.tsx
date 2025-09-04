@@ -21,6 +21,7 @@ type Room = {
   hasWifi?: boolean;
   additionalInfo?: string;
   bookingUrl?: string;
+  priceDetails?: string; // детальная информация о ценах
 };
 
 interface RoomDetailsModalProps {
@@ -153,7 +154,7 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] shadow-lg outline-none focus:outline-none overflow-hidden"
+        className="relative bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] shadow-lg outline-none focus:outline-none flex flex-col"
         tabIndex={-1}
         onMouseDown={(e) => e.stopPropagation()}
       >
@@ -167,7 +168,7 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
         </button>
 
         {/* Контент */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-10 overflow-y-auto flex-1 min-h-0">
           {/* Заголовок */}
           <h2 id={titleId} className="text-2xl font-bold text-[var(--black)] mb-4">
             {room.title}
@@ -175,7 +176,7 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
             {/* Левая колонка - характеристики */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7">
                             {/* Иконки характеристик */}
               <div className="flex space-x-4 text-gray-600 text-sm mb-4">
                 <span className="inline-flex items-center gap-1 icon-text">
@@ -196,28 +197,131 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
                 )}
               </div>
 
-              <section>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">Оборудование кабинета</h3>
-                <ul className="text-gray-700 leading-relaxed" style={{ gap: '4px' }}>
-                  {room.description
-                    .split('\n')
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                    .map((item, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <span className="text-[var(--gray-1)] text-sm">•</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                </ul>
-              </section>
+              {room.title.includes('Зал') ? (
+                // Для залов - простая логика с отдельными полями
+                <div className="mt-6 space-y-6">
+                  {/* Базовый пакет */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--black)' }}>
+                      Базовый пакет
+                    </h3>
+                    <div style={{ color: 'var(--gray-1)' }}>
+                      <ul className="leading-relaxed">
+                        {(room as any).basicPackage?.map((item: string, index: number) => (
+                          <li key={index} className="flex items-center gap-2">
+                            <span className="text-[var(--gray-1)] text-sm">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </section>
 
-              <section>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Инвентарь</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  {room.groupPricing ? room.groupPricing : 'Информация о групповых занятиях не указана'}
-                </p>
-              </section>
+                  {/* Полный пакет */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--black)' }}>
+                      Полный пакет
+                    </h3>
+                    <div style={{ color: 'var(--gray-1)' }}>
+                      <ul className="leading-relaxed mb-4">
+                        {(room as any).fullPackage?.map((item: string, index: number) => (
+                          <li key={index} className="flex items-center gap-2">
+                            <span className="text-[var(--gray-1)] text-sm">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {/* Примечание о предоставлении по запросу */}
+                      <p className="text-sm italic">* — предоставляется по запросу</p>
+                    </div>
+                  </section>
+
+                  {/* Стоимость для залов */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--black)' }}>
+                      Стоимость
+                    </h3>
+                    <div style={{ color: 'var(--gray-1)' }}>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold mb-2" style={{ color: 'var(--black)' }}>Базовый пакет</h4>
+                          <div className="space-y-1" style={{ whiteSpace: 'pre-line' }}>
+                            <p>{(room as any).basicPricing}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-2" style={{ color: 'var(--black)' }}>Полный пакет</h4>
+                          <div className="space-y-1" style={{ whiteSpace: 'pre-line' }}>
+                            <p>{(room as any).fullPricing}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Дополнительная информация */}
+                  {room.additionalInfo && (
+                    <section>
+                      <div style={{ color: 'var(--gray-1)' }}>
+                        <p className="leading-relaxed text-sm italic" style={{ whiteSpace: 'pre-line' }}>
+                          {room.additionalInfo}
+                        </p>
+                      </div>
+                    </section>
+                  )}
+                </div>
+              ) : (
+                // Для кабинетов - обычная структура
+                <div className="mt-6 space-y-6">
+                  <section>
+                    <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--black)' }}>
+                      Оборудование кабинета
+                    </h3>
+                    <div style={{ color: 'var(--gray-1)' }}>
+                      <ul className="leading-relaxed mb-4">
+                        {room.description
+                          .split('\n')
+                          .map((s) => s.trim())
+                          .filter(Boolean)
+                          .map((item, index) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <span className="text-[var(--gray-1)] text-sm">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                      </ul>
+                      {room.groupPricing && (
+                        <p className="leading-relaxed" style={{ whiteSpace: 'pre-line' }}>
+                          {room.groupPricing}
+                        </p>
+                      )}
+                    </div>
+                  </section>
+
+                  {/* Стоимость для кабинетов */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--black)' }}>
+                      Стоимость
+                    </h3>
+                                      <div style={{ color: 'var(--gray-1)' }}>
+                    <p className="leading-relaxed" style={{ whiteSpace: 'pre-line' }}>
+                      {room.priceDetails || `${room.priceFrom} ${room.priceUnit}`}
+                    </p>
+                  </div>
+                  </section>
+
+                  {/* Дополнительная информация для кабинетов */}
+                  {room.additionalInfo && (
+                    <section>
+                      <div style={{ color: 'var(--gray-1)' }}>
+                        <p className="leading-relaxed text-sm italic" style={{ whiteSpace: 'pre-line' }}>
+                          {room.additionalInfo}
+                        </p>
+                      </div>
+                    </section>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Правая колонка - изображения */}
@@ -233,13 +337,6 @@ export default function RoomDetailsModal({ isOpen, onClose, room }: RoomDetailsM
                   ariaLabel={`Фотогалерея — ${room.title}`}
                   className="w-full h-full rounded-lg"
                 />
-              </div>
-              
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Стоимость</h3>
-              <div className="text-gray-700 mb-4">
-                <p className="text-gray-700 leading-relaxed">
-                  {room.priceFrom} <span className="price-unit">{room.priceUnit}</span>
-                </p>
               </div>
               
               <Button 

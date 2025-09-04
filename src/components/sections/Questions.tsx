@@ -5,7 +5,7 @@ export default function Questions() {
   return (
     <section className="py-10 md:py-20 bg-[#F5FAFF]">
       <div className="container">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6" style={{ fontFamily: '"TT Norms Std Trl Cnd"' }}>
+        <h2 className="text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-roboto)', color: 'var(--black)' }}>
           Остались вопросы?
         </h2>
         <Button

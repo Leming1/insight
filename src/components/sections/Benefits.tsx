@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 
 interface BenefitItem {
   icon: string;
@@ -33,15 +32,7 @@ export default function Benefits() {
       <div className="container">
         {/* Section Header */}
         <div className="mb-8 md:mb-16">
-          <h2 className="text-left md:heading-1 md:text-center" style={{
-            color: 'var(--Black, #222)',
-            fontFamily: 'erewhon',
-            fontSize: '40px',
-            fontStyle: 'italic',
-            fontWeight: 700,
-            lineHeight: '40px',
-            letterSpacing: '-1.6px'
-          }}>
+          <h2 className="heading-1 text-left md:text-center">
             Почему выбирают нас
           </h2>
         </div>
@@ -52,7 +43,7 @@ export default function Benefits() {
             <div key={index} className="text-left">
               {/* Icon */}
               <div className="w-[100px] h-[100px] md:w-[150px] md:h-[150px] mb-4 md:mb-6 flex items-center justify-center">
-                <Image
+                <img
                   src={benefit.icon}
                   alt=""
                   width={150}
@@ -64,11 +55,12 @@ export default function Benefits() {
               {/* Content */}
               <h3 className="mb-3 md:mb-4 text-left" style={{
                 color: 'var(--Black, #222)',
-                fontFamily: '"TT Norms Std Trl Cnd"',
+                fontFamily: 'Erewhon',
                 fontSize: '27px',
-                fontStyle: 'normal',
+                fontStyle: 'italic',
                 fontWeight: 700,
-                lineHeight: '27px'
+                lineHeight: '27px',
+                letterSpacing: '-0.5px'
               }}>
                 {Array.isArray(benefit.title) ? (
                   benefit.title.map((line, lineIndex) => (

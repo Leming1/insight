@@ -5,7 +5,7 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        tt: ['TT Norms Std Trl Cnd', 'sans-serif'],
+        tt: ['var(--font-roboto)', 'sans-serif'],
       },
       colors: {
         gray: {

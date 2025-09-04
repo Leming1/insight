@@ -60,7 +60,7 @@ export default function CardRoom({
             <div 
               style={{
                 color: 'var(--gray-2, #888)',
-                fontFamily: '"TT Norms Std Trl Cnd"',
+                fontFamily: 'var(--font-roboto)',
                 fontSize: '16px',
                 fontStyle: 'normal',
                 fontWeight: '700',

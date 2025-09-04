@@ -53,17 +53,14 @@ export default function AnimatedText({
       <AnimatePresence mode="wait">
         <motion.span
           key={currentIndex}
-          initial={{ opacity: 0, y: 25, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -25, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
           transition={{ 
-            type: "spring",
-            stiffness: 100,
-            damping: 15,
-            mass: 0.8,
-            opacity: { duration: 0.6 },
-            y: { type: "spring", stiffness: 120, damping: 18 },
-            scale: { type: "spring", stiffness: 150, damping: 12 }
+            duration: 0.6,
+            ease: "easeInOut",
+            opacity: { duration: 0.6, ease: "easeInOut" },
+            scale: { duration: 0.6, ease: "easeInOut" }
           }}
           className="inline-block"
         >

@@ -6,6 +6,7 @@ export default function RoomDetail() {
     <section className="py-10 md:py-20">
       <div className="container">
         <CardRoomExtended
+          id="1"
           title="Кабинет 1"
           capacity="До 10 человек"
           area="16м²"
