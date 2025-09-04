@@ -4,7 +4,6 @@ import Spaces from '@sections/Spaces';
 import FAQ from '@sections/FAQ';
 import Reviews from '@sections/Reviews';
 import Footer from '@sections/Footer';
-import Contacts from '@sections/Contacts';
 
 function PageBackground() {
   return (
@@ -42,8 +41,6 @@ export default function Page() {
       <Reviews />
 
       <FAQ />
-
-      <Contacts />
 
       <Footer />
     </main>
